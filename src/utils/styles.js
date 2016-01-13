@@ -1,10 +1,29 @@
 import AutoPrefix from '../styles/auto-prefix';
-import {merge} from '../utils/immutability-helper';
+import update from 'react-addons-update';
 import warning from 'warning';
 
 const reTranslate = /((^|\s)translate(3d|X)?\()(\-?[\d]+)/;
 
 const reSkew = /((^|\s)skew(x|y)?\()\s*(\-?[\d]+)(deg|rad|grad)(,\s*(\-?[\d]+)(deg|rad|grad))?/;
+
+/**
+ * Methods from old immutability-helper.js
+ */
+
+function mergeSingle(objA, objB) {
+  if (!objA) return objB;
+  if (!objB) return objA;
+  return update(objA, {$merge: objB});
+}
+
+function merge(base, ...args) {
+  for (let i = 0; i < args.length; i++) {
+    if (args[i]) {
+      base = mergeSingle(base, args[i]);
+    }
+  }
+  return base;
+}
 
 /**
  * This function ensures that `style` supports both ltr and rtl directions by
