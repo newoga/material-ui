@@ -6,10 +6,6 @@ const reTranslate = /((^|\s)translate(3d|X)?\()(\-?[\d]+)/;
 
 const reSkew = /((^|\s)skew(x|y)?\()\s*(\-?[\d]+)(deg|rad|grad)(,\s*(\-?[\d]+)(deg|rad|grad))?/;
 
-/**
- * Methods from old immutability-helper.js
- */
-
 function mergeSingle(objA, objB) {
   if (!objA) return objB;
   if (!objB) return objA;
@@ -104,9 +100,6 @@ function ensureDirection(muiTheme, style) {
 
 /**
  * `merge` is used to merge styles together.
- *
- * This method currently used the merge implementation from
- * `utils/immutability-helper.js`
  */
 export function mergeStyles(base, ...args) {
   for (let i = 0; i < args.length; i++) {
