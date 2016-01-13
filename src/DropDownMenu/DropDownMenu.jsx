@@ -405,14 +405,14 @@ const DropDownMenu = React.createClass({
         {...other}
         ref="root"
         className={className}
-        style={prepareStyles(muiTheme, styles.root, open && styles.rootWhenOpen, style)}
+        style={prepareStyles(muiTheme, mergeStyles(styles.root, open && styles.rootWhenOpen, style))}
       >
         <ClearFix style={mergeStyles(styles.control)} onTouchTap={this._onControlTouchTap}>
-          <div style={prepareStyles(muiTheme, styles.label, open && styles.labelWhenOpen, labelStyle)}>
+          <div style={prepareStyles(muiTheme, mergeStyles(styles.label, open && styles.labelWhenOpen, labelStyle))}>
             {displayValue}
           </div>
           <DropDownArrow style={mergeStyles(styles.icon, iconStyle)}/>
-          <div style={prepareStyles(muiTheme, styles.underline, underlineStyle)}/>
+          <div style={prepareStyles(muiTheme, mergeStyles(styles.underline, underlineStyle))}/>
         </ClearFix>
         <Popover
           anchorOrigin={{horizontal: 'left', vertical: 'top'}}
