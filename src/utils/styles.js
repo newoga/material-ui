@@ -131,9 +131,14 @@ export function mergeAndPrefix(...args) {
  * If this method detects you called it twice on the same style object, it
  * will produce a warning in the console.
  */
-export function prepareStyles(muiTheme, ...styles) {
-  styles = styles.length > 1 ? mergeStyles(...styles) : (styles[0] || {});
-  const flipped = ensureDirection(muiTheme, styles);
+export function prepareStyles(muiTheme, style, ...styles) {
+  if (styles) {
+    //warning(false, 'Providing more than one style argument to prepareStyles has been deprecated. ' +
+    //  'Please pass a single style, such as the result from mergeStyles(...styles).');
+    style = mergeStyles(style, ...styles);
+  }
+
+  const flipped = ensureDirection(muiTheme, style);
   return AutoPrefix.all(flipped);
 }
 
