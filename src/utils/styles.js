@@ -16,15 +16,6 @@ function mergeSingle(objA, objB) {
   return update(objA, {$merge: objB});
 }
 
-function merge(base, ...args) {
-  for (let i = 0; i < args.length; i++) {
-    if (args[i]) {
-      base = mergeSingle(base, args[i]);
-    }
-  }
-  return base;
-}
-
 /**
  * This function ensures that `style` supports both ltr and rtl directions by
  * checking `styleConstants` in `muiTheme` and replacing attribute keys if
@@ -35,7 +26,7 @@ function ensureDirection(muiTheme, style) {
     warning(!style.didFlip, `You're calling ensureDirection() on the same style
       object twice.`);
 
-    style = merge({
+    style = mergeStyles({
       didFlip: 'true',
     }, style);
   }
@@ -110,40 +101,51 @@ function ensureDirection(muiTheme, style) {
   return newStyle;
 }
 
+
+/**
+ * `merge` is used to merge styles together.
+ *
+ * This method currently used the merge implementation from
+ * `utils/immutability-helper.js`
+ */
+export function mergeStyles(base, ...args) {
+  for (let i = 0; i < args.length; i++) {
+    if (args[i]) {
+      base = mergeSingle(base, args[i]);
+    }
+  }
+  return base;
+}
+
+/**
+ * `mergeAndPrefix` is used to merge styles and autoprefix them.
+ *
+ * It has has been deprecated and should no longer be used.
+ */
+export function mergeAndPrefix(...args) {
+  warning(false, 'Use of mergeAndPrefix() has been deprecated. ' +
+    'Please use mergeStyles() for merging styles, and then prepareStyles() for prefixing and ensuring direction.');
+  return AutoPrefix.all(mergeStyles(...args));
+}
+
+/**
+ * `prepareStyles` is used to merge multiple styles, make sure they are flipped
+ * to rtl if needed, and then autoprefix them.
+ *
+ * Never call this on the same style object twice. As a rule of thumb, only
+ * call it when passing style attribute to html elements.
+ *
+ * If this method detects you called it twice on the same style object, it
+ * will produce a warning in the console.
+ */
+export function prepareStyles(muiTheme, ...styles) {
+  styles = styles.length > 1 ? mergeStyles(...styles) : (styles[0] || {});
+  const flipped = ensureDirection(muiTheme, styles);
+  return AutoPrefix.all(flipped);
+}
+
 export default {
-
-  /**
-   * `merge` is used to merge styles together.
-   *
-   * This method currently used the merge implementation from
-   * `utils/immutability-helper.js`
-   */
-  merge,
-
-  /**
-   * `mergeAndPrefix` is used to merge styles and autoprefix them.
-   *
-   * It has has been deprecated and should no longer be used.
-   */
-  mergeAndPrefix(...args) {
-    warning(false, 'Use of mergeAndPrefix() has been deprecated. ' +
-      'Please use mergeStyles() for merging styles, and then prepareStyles() for prefixing and ensuring direction.');
-    return AutoPrefix.all(merge(...args));
-  },
-
-  /**
-   * `prepareStyles` is used to merge multiple styles, make sure they are flipped
-   * to rtl if needed, and then autoprefix them.
-   *
-   * Never call this on the same style object twice. As a rule of thumb, only
-   * call it when passing style attribute to html elements.
-   *
-   * If this method detects you called it twice on the same style object, it
-   * will produce a warning in the console.
-   */
-  prepareStyles(muiTheme, ...styles) {
-    styles = styles.length > 1 ? merge(...styles) : (styles[0] || {});
-    const flipped = ensureDirection(muiTheme, styles);
-    return AutoPrefix.all(flipped);
-  },
+  mergeStyles,
+  mergeAndPrefix,
+  prepareStyles,
 };
