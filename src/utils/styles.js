@@ -97,10 +97,6 @@ function ensureDirection(muiTheme, style) {
   return newStyle;
 }
 
-
-/**
- * `merge` is used to merge styles together.
- */
 export function mergeStyles(base, ...args) {
   for (let i = 0; i < args.length; i++) {
     if (args[i]) {
@@ -111,9 +107,8 @@ export function mergeStyles(base, ...args) {
 }
 
 /**
- * `mergeAndPrefix` is used to merge styles and autoprefix them.
- *
- * It has has been deprecated and should no longer be used.
+ * `mergeAndPrefix` is used to merge styles and autoprefix them. It has has been deprecated
+ *  and should no longer be used.
  */
 export function mergeAndPrefix(...args) {
   warning(false, 'Use of mergeAndPrefix() has been deprecated. ' +
